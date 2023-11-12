@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import Legend from "./Legend";
+import Select from "./Select";
+import Button from "./Button";
+import Result from "./Result";
+import Label from "./Label";
+import Input from "./Input";
+import Form from "./Form";
+import Container from "./Container";
+import Fieldset from "./Fieldset";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Form>
+        <Fieldset>
+          <Legend />
+          <Label title="Wpisz kwotę:" labelBody={<Input />} />
+          <p>
+            <Label title="Wybierz walutę:" labelBody={<Select />} />
+          </p>
+          <Result />
+          <Button />
+        </Fieldset>
+      </Form>
+    </Container>
   );
 }
 
