@@ -15,9 +15,7 @@ function App() {
         <Fieldset>
           <Legend />
           <Label title="Wpisz kwotę:" labelBody={<Input />} />
-          <p>
-            <Label title="Wybierz walutę:" labelBody={<Select />} />
-          </p>
+          <Label title="Wybierz walutę:" labelBody={<Select />} />
           <Result />
           <Button />
         </Fieldset>

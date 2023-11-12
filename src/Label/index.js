@@ -1,5 +1,4 @@
-
-
+import "./style.css";
 
 const Label = ({title,labelBody}) => (
   <p>
