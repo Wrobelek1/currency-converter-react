@@ -1,26 +1,25 @@
-import Legend from "./Legend";
-import Select from "./Select";
-import Button from "./Button";
-import Result from "./Result";
-import Label from "./Label";
-import Input from "./Input";
-import Form from "./Form";
-import Container from "./Container";
-import Fieldset from "./Fieldset";
+import { useState } from "react";
+import  { Form } from "./Form";
+import { currencies } from "./currencies";
+import { Wrapper } from "./styled";
 
 function App() {
+  
+  const [result, setResult] = useState();
+
+  const calcResult = (currency, amount) => {
+    const rate = currencies
+    .find(({short}) => short === currency).rate;
+
+    setResult({
+      targetAmount: amount / rate,
+      currency,
+    })
+  }
   return (
-    <Container>
-      <Form>
-        <Fieldset>
-          <Legend />
-          <Label title="Wpisz kwotę:" labelBody={<Input />} />
-          <Label title="Wybierz walutę:" labelBody={<Select />} />
-          <Result />
-          <Button />
-        </Fieldset>
-      </Form>
-    </Container>
+    <Wrapper>
+      <Form result={result} calcResult={calcResult} />
+    </Wrapper>
   );
 }
 
