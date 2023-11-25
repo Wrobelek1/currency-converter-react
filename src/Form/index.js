@@ -1,26 +1,53 @@
 
 import { useState } from "react";
-import { currencies } from "../currencies";
 import Result from "./Result";
 import { Clock } from "../Clock";
-import { Button, Fieldset, LabelText, Legend, Field } from "./styled";
+import { Button, Fieldset, LabelText, Legend, Field, Loading, Failure } from "./styled";
+import { useRatesData } from "./useRatesData";
 
-
-export const Form = ({ calcResult, result }) => {
-  const [currency, setCurrency] = useState(currencies[0].short);
+export const Form = () => {
+  const [result, setResult] = useState();
+  const [currency, setCurrency] = useState("EUR");
   const [amount, setAmount] = useState("");
+  
+  const ratesData = useRatesData();
+  
+  const currenciesDate = new Date(ratesData.apiDate);
+
+  const calcResult = () => {
+    const rate = ratesData.currencies[currency];
+   
+    setResult({
+      targetAmount: amount * rate,
+      currency,
+      rate,
+    });
+  }
 
   const onSubmit = (event) => {
     event.preventDefault();
-    calcResult(currency, amount);
-  };
+    calcResult();
+  }
 
 
   return (
     <form onSubmit={onSubmit}>
       <Fieldset>
         <Legend>Kalkulator walutowy</Legend>
-        <Clock />
+        {ratesData.state === "loading" 
+          ? (
+        <Loading>
+          Sekundka... <br /> Ładuję kursy walut
+        </Loading>
+        )
+        : (
+          ratesData.state === "error" ? (
+          <Failure>
+            Coś poszło nie tak :C  Sprawdź połączenie lub spróbuj ponownie później.
+          </Failure>
+        ) : (
+        <>
+            <Clock />
         <p>
           <label>
             <LabelText>Wpisz kwotę:</LabelText>
@@ -28,6 +55,7 @@ export const Form = ({ calcResult, result }) => {
               value={amount}
               onChange={({ target }) => setAmount(target.value)}
               required
+              name="amount"
               type="number"
               min="0"
               step="0.01"
@@ -38,23 +66,26 @@ export const Form = ({ calcResult, result }) => {
         <p>
           <label>
             <LabelText>Wybierz walutę:</LabelText>{" "}
-            <Field as="select" value={currency} onChange={({target}) => setCurrency(target.value)}>
-              {currencies.map((currency => (
-                <option 
-                key={currency.short}
-                value={currency.short}
+            <Field as="select" name="currency" value={currency} onChange={({target}) => setCurrency(target.value)}>
+              {Object.keys(ratesData.currencies).map((currency) => (
+              <option 
+                key={currency}
+                value={currency}
                 >
-                  {currency.name}
-                </option>
-              )))}
+                  {currency}
+              </option>
+            ))}
             </Field>
           </label>
         </p>
-        <Result result={result}/>
+        <Result result={result} currenciesDate={currenciesDate}/>
         <p>
           <Button>Przelicz</Button>
         </p>
-      </Fieldset>
-    </form>
+        </>
+        )
+      )}
+    </Fieldset>
+  </form>
   );
 };
